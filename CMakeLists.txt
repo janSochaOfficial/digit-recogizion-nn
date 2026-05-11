@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 
-project(CppTemplate CXX)
+project(DigitRecognisionNN CXX)
 
 include(FetchContent)
 
@@ -182,7 +182,7 @@ if(CLANG_TIDY_BIN)
             --extra-arg=-std=c++20
             --extra-arg=-Wno-unknown-warning-option   # silences GCC-only flags
             --warnings-as-errors=*
-            "--header-filter=${CMAKE_SOURCE_DIR}/\\(src\\|include\\)|tests\\/.*"
+            "--header-filter=${CMAKE_SOURCE_DIR}/\\(src\\|include\\|tests\\)/.*"
             ${ALL_SOURCES}
         COMMENT "Running clang-tidy on src/, include/ and tests/..."
         DEPENDS ${ALL_SOURCES}
@@ -220,31 +220,32 @@ endmacro()
 
 
 # ── Library ────────────────────────────────────────────────────────────────────
-add_library(CppTemplate STATIC
-    "${CMAKE_SOURCE_DIR}/src/ExampleClass.cpp"
+add_library(DigitRecognisionNN STATIC
+    "${CMAKE_SOURCE_DIR}/src/Dataset.cpp"
 )
 
-target_include_directories(CppTemplate PUBLIC
+target_include_directories(DigitRecognisionNN PUBLIC
     $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
     $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
 )
 
 
-target_compile_options(CppTemplate PRIVATE ${COMMON_FLAGS})
-target_link_options(CppTemplate PUBLIC ${COMMON_LINK_FLAGS})
+target_compile_options(DigitRecognisionNN PRIVATE ${COMMON_FLAGS})
+target_link_options(DigitRecognisionNN PUBLIC ${COMMON_LINK_FLAGS})
 
 if(DEFINED SANITIZER_FLAGS AND SANITIZER_FLAGS)
-    target_compile_options(CppTemplate PRIVATE ${SANITIZER_FLAGS})
-    target_link_options(CppTemplate PUBLIC ${SANITIZER_FLAGS})
+    target_compile_options(DigitRecognisionNN PRIVATE ${SANITIZER_FLAGS})
+    target_link_options(DigitRecognisionNN PUBLIC ${SANITIZER_FLAGS})
 endif()
 
+file(COPY "${CMAKE_SOURCE_DIR}/dataset/" DESTINATION "${CMAKE_BINARY_DIR}/dataset/")
 
 file(GLOB SOURCES CONFIGURE_DEPENDS "${CMAKE_SOURCE_DIR}/src/*_exec.cpp")
 
 foreach(SOURCE ${SOURCES})
     get_filename_component(TARGET_NAME ${SOURCE} NAME_WE)
     add_executable(${TARGET_NAME} ${SOURCE})
-    target_include_directories(${TARGET_NAME} PRIVATE "${CMAKE_SOURCE_DIR}/include")
+    target_link_libraries(${TARGET_NAME} DigitRecognisionNN)
     target_compile_options(${TARGET_NAME} PRIVATE ${COMMON_FLAGS})
     target_link_options(${TARGET_NAME} PRIVATE ${COMMON_LINK_FLAGS})
     link_to_bin(${TARGET_NAME})

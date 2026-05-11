@@ -1,11 +1,11 @@
 add_executable (unit_tests
-    ExampleClass_test.cpp
+    Dataset_test.cpp
 )
 
 target_link_libraries(unit_tests
     PRIVATE
         GTest::gtest_main   # includes main() for you
-        CppTemplate            # link against your actual library target
+        DigitRecognisionNN            # link against your actual library target
 )
 
 

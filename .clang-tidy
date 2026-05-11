@@ -10,7 +10,8 @@ Checks: >
   -modernize-use-trailing-return-type,
   -readability-magic-numbers,
   -cppcoreguidelines-avoid-magic-numbers,
-  -bugprone-easily-swappable-parameters
+  -bugprone-easily-swappable-parameters,
+  -cppcoreguidelines-pro-type-reinterpret-cast
 
 WarningsAsErrors: "*"
 HeaderFilterRegex: ".*/src/.*|.*/include/.*"
