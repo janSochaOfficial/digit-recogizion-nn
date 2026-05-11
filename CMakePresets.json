@@ -1,0 +1,149 @@
+{
+    "version": 6,
+    "cmakeMinimumRequired": {
+        "major": 3,
+        "minor": 25,
+        "patch": 0
+    },
+    "configurePresets": [
+        {
+            "name": "base",
+            "hidden": true,
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/build/${presetName}",
+            "cacheVariables": {
+                "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+            }
+        },
+        {
+            "name": "debug",
+            "displayName": "Debug",
+            "inherits": "base",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "BUILD_TESTS": "ON"
+            }
+        },
+        {
+            "name": "release",
+            "displayName": "Release",
+            "inherits": "base",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release",
+                "BUILD_TESTS": "OFF"
+            }
+        },
+        {
+            "name": "release-with-tests",
+            "displayName": "Release (with tests)",
+            "inherits": "base",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release",
+                "BUILD_TESTS": "ON"
+            }
+        },
+        {
+            "name": "asan",
+            "displayName": "Debug + AddressSanitizer",
+            "inherits": "debug",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "CMAKE_C_FLAGS": "-fsanitize=address -fno-omit-frame-pointer",
+                "CMAKE_CXX_FLAGS": "-fsanitize=address -fno-omit-frame-pointer",
+                "CMAKE_EXE_LINKER_FLAGS": "-fsanitize=address",
+                "CMAKE_SHARED_LINKER_FLAGS": "-fsanitize=address"
+            }
+        },
+        {
+            "name": "ci",
+            "displayName": "CI (Release + tests, strict)",
+            "inherits": "release-with-tests",
+            "cacheVariables": {
+                "CMAKE_COMPILE_WARNING_AS_ERROR": "ON",
+                "CMAKE_C_COMPILER": "$env{CC}",
+                "CMAKE_CXX_COMPILER": "$env{CXX}"
+            }
+        },
+        {
+            "name": "Debug",
+            "description": "",
+            "displayName": "",
+            "inherits": [
+                "debug"
+            ]
+        }
+    ],
+    "buildPresets": [
+        {
+            "name": "debug",
+            "configurePreset": "debug",
+            "jobs": 0
+        },
+        {
+            "name": "release",
+            "configurePreset": "release",
+            "jobs": 0
+        },
+        {
+            "name": "release-with-tests",
+            "configurePreset": "release-with-tests",
+            "jobs": 0
+        },
+        {
+            "name": "asan",
+            "configurePreset": "asan",
+            "jobs": 0
+        },
+        {
+            "name": "ci",
+            "configurePreset": "ci",
+            "jobs": 0
+        }
+    ],
+    "testPresets": [
+        {
+            "name": "debug",
+            "configurePreset": "debug",
+            "output": {
+                "outputOnFailure": true
+            },
+            "execution": {
+                "noTestsAction": "error",
+                "stopOnFailure": false
+            }
+        },
+        {
+            "name": "release-with-tests",
+            "configurePreset": "release-with-tests",
+            "output": {
+                "outputOnFailure": true
+            },
+            "execution": {
+                "noTestsAction": "error",
+                "stopOnFailure": false
+            }
+        },
+        {
+            "name": "asan",
+            "configurePreset": "asan",
+            "output": {
+                "outputOnFailure": true
+            },
+            "execution": {
+                "noTestsAction": "error",
+                "stopOnFailure": true
+            }
+        },
+        {
+            "name": "ci",
+            "configurePreset": "ci",
+            "output": {
+                "outputOnFailure": true
+            },
+            "execution": {
+                "noTestsAction": "error",
+                "stopOnFailure": false
+            }
+        }
+    ]
+}

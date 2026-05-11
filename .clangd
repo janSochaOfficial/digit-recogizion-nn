@@ -1,0 +1,11 @@
+# .clangd
+CompileFlags:
+  Add:
+    - "-std=c++20"
+    - "-D_GLIBCXX_ASSERTIONS"
+  Remove:
+    - "-fstack-clash-protection"   # clangd doesn't understand some GCC-only flags
+    - "-fcf-protection=full"
+    - "-fstack-protector-strong"
+    - "-Wl,-z,relro"               # linker flags confuse clangd
+    - "-pie"
