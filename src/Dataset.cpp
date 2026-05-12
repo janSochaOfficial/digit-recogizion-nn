@@ -29,6 +29,10 @@ const std::string TRAINING_IMAGES_FILE_PATH =
 const std::string TRAINING_LABELS_FILE_PATH =
     "./dataset/train-labels.idx1-ubyte";
 
+const std::string TESTING_IMAGES_FILE_PATH =
+    "./dataset/t10k-images.idx3-ubyte";
+const std::string TESTING_LABELS_FILE_PATH =
+    "./dataset/t10k-labels.idx1-ubyte";
 } // namespace
 
 std::span<const std::array<float, Dataset::PIXEL_COUNT>> Dataset::getImages() {
@@ -42,8 +46,11 @@ bool Dataset::isDatasetLoaded() { return getDataLoaded_(); }
 void Dataset::clear() {
     auto &labels = getLabels_();
     auto &images = getImages_();
+    auto &dataLoaded = getDataLoaded_();
     labels.clear();
     images.clear();
+
+    dataLoaded = false;
 }
 
 void Dataset::loadTrainingDataset() {
@@ -153,9 +160,32 @@ void Dataset::loadLabels(const std::string &fileName, uint32 magic_) {
     }
     byte buffer = 0;
     for (uint32 i = 0; i < label_count; ++i) {
-        file.read(reinterpret_cast<char*>(&buffer), 1);
+        file.read(reinterpret_cast<char *>(&buffer), 1);
         labels.push_back(buffer);
     }
 }
 
-void Dataset::loadTestingDataset() {}
+void Dataset::displayImage(const std::array<float, Dataset::PIXEL_COUNT> &image,
+                           std::ostream &stream) {
+    static constexpr std::string_view SHADES = " .:-=+*#%@";
+    for (size_t row = 0; row < IMAGE_SIZE; ++row) {
+        for (size_t col = 0; col < IMAGE_SIZE; ++col) {
+            float pixel = image.at(row * IMAGE_SIZE + col);
+            auto index = static_cast<size_t>(pixel * (SHADES.size() - 1));
+            stream << SHADES[index] << SHADES[index]; // doubled for aspect ratio
+        }
+        stream << '\n';
+    }
+}
+
+void Dataset::loadTestingDataset() {
+    auto &dataLoaded = getDataLoaded_();
+
+    checkIfFileExists(TESTING_IMAGES_FILE_PATH);
+    checkIfFileExists(TESTING_LABELS_FILE_PATH);
+
+    loadImages(TESTING_IMAGES_FILE_PATH);
+    loadLabels(TESTING_LABELS_FILE_PATH);
+
+    dataLoaded = true;
+}

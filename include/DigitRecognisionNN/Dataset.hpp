@@ -3,6 +3,7 @@
 
 #include <array>
 #include <cstdint>
+#include <iostream>
 #include <span>
 #include <string>
 #include <vector>
@@ -26,15 +27,21 @@ class Dataset {
     static void clear();
     static bool isDatasetLoaded();
 
-  private:
+    static void
+    displayImage(const std::array<float, Dataset::PIXEL_COUNT> &image,
+                 std::ostream &stream = std::cout);
+
+  protected:
     static std::string toHexString(uint32 number);
     static uint32 readLittleEdian(std::ifstream &file);
     static std::array<float, Dataset::PIXEL_COUNT>
     readImage(std::ifstream &file);
     static float normalizeScale(byte toNormalize);
     static void checkIfFileExists(const std::string &fileName);
-    static void loadImages(const std::string &fileName, uint32 magic_ = 0x00000803U);
-    static void loadLabels(const std::string &fileName, uint32 magic_ = 0x00000801U);
+    static void loadImages(const std::string &fileName,
+                           uint32 magic_ = 0x00000803U);
+    static void loadLabels(const std::string &fileName,
+                           uint32 magic_ = 0x00000801U);
 };
 
 #endif
