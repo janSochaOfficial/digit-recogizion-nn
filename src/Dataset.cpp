@@ -29,10 +29,8 @@ const std::string TRAINING_IMAGES_FILE_PATH =
 const std::string TRAINING_LABELS_FILE_PATH =
     "./dataset/train-labels.idx1-ubyte";
 
-const std::string TESTING_IMAGES_FILE_PATH =
-    "./dataset/t10k-images.idx3-ubyte";
-const std::string TESTING_LABELS_FILE_PATH =
-    "./dataset/t10k-labels.idx1-ubyte";
+const std::string TESTING_IMAGES_FILE_PATH = "./dataset/t10k-images.idx3-ubyte";
+const std::string TESTING_LABELS_FILE_PATH = "./dataset/t10k-labels.idx1-ubyte";
 } // namespace
 
 std::span<const std::array<float, Dataset::PIXEL_COUNT>> Dataset::getImages() {
@@ -172,7 +170,8 @@ void Dataset::displayImage(const std::array<float, Dataset::PIXEL_COUNT> &image,
         for (size_t col = 0; col < IMAGE_SIZE; ++col) {
             float pixel = image.at(row * IMAGE_SIZE + col);
             auto index = static_cast<size_t>(pixel * (SHADES.size() - 1));
-            stream << SHADES[index] << SHADES[index]; // doubled for aspect ratio
+            stream << SHADES[index]
+                   << SHADES[index]; // doubled for aspect ratio
         }
         stream << '\n';
     }

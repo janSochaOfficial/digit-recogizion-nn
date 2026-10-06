@@ -1,5 +1,7 @@
 add_executable (unit_tests
     Dataset_test.cpp
+    Activators_test.cpp
+    Layer_test.cpp
 )
 
 target_link_libraries(unit_tests
