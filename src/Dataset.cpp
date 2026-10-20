@@ -21,8 +21,6 @@ auto &getLabels_() {
     static std::vector<byte> labels_;
     return labels_;
 }
-constexpr uint32 IMAGE_FILE_MAGIC = 0x00000803U;
-constexpr uint32 LABEL_FILE_MAGIC = 0x00000801U;
 
 const std::string TRAINING_IMAGES_FILE_PATH =
     "./dataset/train-images.idx3-ubyte";

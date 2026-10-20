@@ -1,16 +1,16 @@
+#include "DigitRecognisionNN/Activators.hpp"
 #include "DigitRecognisionNN/Dataset.hpp"
 #include "DigitRecognisionNN/Layer.hpp"
-#include "DigitRecognisionNN/Activators.hpp"
+#include <exception>
 #include <iostream>
 
-int main() {
+int main() try {
 
     constexpr size_t INPUT_SIZE = 728;
     constexpr size_t OUTPUT_SIZE = 128;
 
-    using ActT = decltype(&Activators::softmax<double, OUTPUT_SIZE>);
-
-    Layer<double, ActT, INPUT_SIZE, OUTPUT_SIZE> firstLayer(Activators::softmax<double, OUTPUT_SIZE>);
+    Layer<double, Activators::Softmax<double>> firstLayer(
+        INPUT_SIZE, OUTPUT_SIZE, Activators::Softmax<double>{});
 
     // Dataset::loadTrainingDataset();
     // auto firstImage = Dataset::getImages()[0];
@@ -19,4 +19,7 @@ int main() {
     // std::cout << static_cast<int>(Dataset::getLabels()[0]) << std::endl <<
     // Dataset::getLabels().size();
     return 0;
+} catch (const std::exception &error) {
+    std::cerr << error.what() << '\n';
+    return 1;
 }

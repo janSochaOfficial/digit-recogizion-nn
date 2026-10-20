@@ -32,7 +32,7 @@ class Dataset {
                  std::ostream &stream = std::cout);
 
   protected:
-    static std::string toHexString(uint32 number);
+    static std::string toHexString(uint32 value);
     static uint32 readLittleEdian(std::ifstream &file);
     static std::array<float, Dataset::PIXEL_COUNT>
     readImage(std::ifstream &file);

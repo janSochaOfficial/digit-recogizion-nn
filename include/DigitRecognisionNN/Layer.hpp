@@ -7,41 +7,50 @@
 #include <random>
 #include <type_traits>
 
-template <typename T, typename ActivatorT, size_t input_size,
-          size_t output_size>
-class Layer {
+template <typename T, typename ActivatorT> class Layer {
     using Matrix = blaze::DynamicMatrix<T>;
-    using VectorO = blaze::StaticVector<T, output_size>;
-    static_assert(std::is_invocable_r_v<VectorO, ActivatorT, VectorO>,
-                  "ActivatorT must satisfy VectorO -> VectorO");
+    using Vector = blaze::DynamicVector<T>;
+    static_assert(std::is_invocable_r_v<Vector, ActivatorT, Vector>,
+                  "ActivatorT must satisfy Vector -> Vector");
 
-  protected:
-    static inline std::mt19937 Generator{std::random_device{}()};
+    static std::mt19937 &generator() {
+        static std::mt19937 engine{std::random_device{}()};
+        return engine;
+    }
+
+    // NOLINTBEGIN(cppcoreguidelines-avoid-const-or-ref-data-members)
+    const size_t input_size_;
+    const size_t output_size_;
+    // NOLINTEND(cppcoreguidelines-avoid-const-or-ref-data-members)
 
     ActivatorT activator_;
     Matrix z_cache_;      // pre activation
     Matrix output_cache_; // from inputs
     Matrix weights_;
-    VectorO bias_;
+    Vector bias_;
 
     void generateWeights();
     void generateBias();
 
   public:
-    Layer(ActivatorT activator);
-    Layer(ActivatorT activator, Matrix weights, VectorO bias);
+    Layer(size_t input_size, size_t output_size, ActivatorT activator);
+    Layer(size_t input_size, size_t output_size, ActivatorT activator,
+          Matrix weights, Vector bias);
+
+    [[nodiscard]] size_t getInputSize() const;
+    [[nodiscard]] size_t getOutputSize() const;
 
     void setActivator(ActivatorT activator);
-    VectorO activate(const VectorO &values);
+    Vector activate(const Vector &values);
 
     [[nodiscard]] const Matrix &getOutputCache() const;
     [[nodiscard]] const Matrix &getZCache() const;
 
     [[nodiscard]] const Matrix &getWeights() const;
-    [[nodiscard]] const VectorO &getBias() const;
+    [[nodiscard]] const Vector &getBias() const;
 
     void setWeights(Matrix weights);
-    void setBias(VectorO bias);
+    void setBias(Vector bias);
 
     const Matrix &compute(const Matrix &input);
 };
